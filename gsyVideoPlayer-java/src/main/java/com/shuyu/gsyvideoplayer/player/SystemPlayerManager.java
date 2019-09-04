@@ -6,6 +6,7 @@ import android.media.PlaybackParams;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Message;
+import android.util.Log;
 import android.view.Surface;
 
 import com.shuyu.gsyvideoplayer.cache.ICacheManager;
@@ -89,6 +90,19 @@ public class SystemPlayerManager implements IPlayerManager {
             e.printStackTrace();
         }
     }
+
+//    @Override
+//    public void setMediaVoice(String key, float voiceNum) {
+//        Log.e("voice", "===设置媒体音量:系统====" + voiceNum);
+//        try {
+//            if (mediaPlayer != null && !release) {
+//                mediaPlayer.setVolume(voiceNum, voiceNum);
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
+
 
     @Override
     public void releaseSurface() {
@@ -227,7 +241,7 @@ public class SystemPlayerManager implements IPlayerManager {
                 } else {
                     Debuger.printfError(" not support setSpeed");
                 }
-            } catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }

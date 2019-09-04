@@ -26,6 +26,7 @@ import com.shuyu.gsyvideoplayer.utils.NetInfoModule;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+
 import static com.shuyu.gsyvideoplayer.utils.CommonUtil.getTextSpeed;
 
 /**
@@ -152,17 +153,17 @@ public abstract class GSYVideoView extends GSYTextureRenderView implements GSYMe
     //网络监听
     protected NetInfoModule mNetInfoModule;
 
-    public GSYVideoView( Context context) {
+    public GSYVideoView(Context context) {
         super(context);
         init(context);
     }
 
-    public GSYVideoView( Context context,  AttributeSet attrs) {
+    public GSYVideoView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context);
     }
 
-    public GSYVideoView( Context context,  AttributeSet attrs,  int defStyleAttr) {
+    public GSYVideoView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context);
     }
@@ -214,6 +215,7 @@ public abstract class GSYVideoView extends GSYTextureRenderView implements GSYMe
         }
         return 0;
     }
+
 
     @Override
     public int getCurrentVideoHeight() {
@@ -314,6 +316,13 @@ public abstract class GSYVideoView extends GSYTextureRenderView implements GSYMe
         startPrepare();
     }
 
+    float mediaVoiceNum;
+
+    public void setMediaIjkVoiceNum(float mediaVoiceNum) {
+        this.mediaVoiceNum = mediaVoiceNum;
+    }
+
+
     protected void startPrepare() {
         if (getGSYVideoManager().listener() != null) {
             getGSYVideoManager().listener().onCompletion();
@@ -328,7 +337,7 @@ public abstract class GSYVideoView extends GSYTextureRenderView implements GSYMe
         mAudioManager.requestAudioFocus(onAudioFocusChangeListener, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
         ((Activity) getActivityContext()).getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         mBackUpPlayingBufferState = -1;
-        getGSYVideoManager().prepare(mUrl, (mMapHeadData == null) ? new HashMap<String, String>() : mMapHeadData, mLooping, mSpeed, mCache, mCachePath, mOverrideExtension);
+        getGSYVideoManager().prepare(mUrl, (mMapHeadData == null) ? new HashMap<String, String>() : mMapHeadData, mLooping, mSpeed, mCache, mCachePath, mOverrideExtension, mediaVoiceNum);
         setStateAndUi(CURRENT_STATE_PREPAREING);
     }
 
@@ -586,12 +595,13 @@ public abstract class GSYVideoView extends GSYTextureRenderView implements GSYMe
         startAfterPrepared();
     }
 
+
     @Override
     public void onAutoCompletion() {
-//        setStateAndUi(CURRENT_STATE_AUTO_COMPLETE);
-//
-//        mSaveChangeViewTIme = 0;
-//        mCurrentPosition = 0;
+        setStateAndUi(CURRENT_STATE_AUTO_COMPLETE);
+
+        mSaveChangeViewTIme = 0;
+        mCurrentPosition = 0;
 //
 //        if (mTextureViewContainer.getChildCount() > 0) {
 //            mTextureViewContainer.removeAllViews();
@@ -832,6 +842,7 @@ public abstract class GSYVideoView extends GSYTextureRenderView implements GSYMe
         }
     }
 
+
     /**
      * 监听网络状态
      */
@@ -929,7 +940,6 @@ public abstract class GSYVideoView extends GSYTextureRenderView implements GSYMe
     public void setPlayTag(String playTag) {
         this.mPlayTag = playTag;
     }
-
 
     public int getPlayPosition() {
         return mPlayPosition;
@@ -1124,6 +1134,7 @@ public abstract class GSYVideoView extends GSYTextureRenderView implements GSYMe
 
     /**
      * 是否需要覆盖拓展类型，目前只针对exoPlayer内核模式有效
+     *
      * @param overrideExtension 比如传入 m3u8,mp4,avi 等类型
      */
     public void setOverrideExtension(String overrideExtension) {

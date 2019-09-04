@@ -137,6 +137,9 @@ public class StandardGSYVideoPlayer extends GSYVideoPlayer {
         startDismissControlViewTimer();
     }
 
+
+
+
     /**
      * 显示wifi确定框，如需要自定义继承重写即可
      */

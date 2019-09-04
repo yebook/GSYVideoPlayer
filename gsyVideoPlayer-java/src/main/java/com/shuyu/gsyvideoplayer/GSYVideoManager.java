@@ -103,7 +103,6 @@ public class GSYVideoManager extends GSYVideoBaseManager {
         GSYVideoManager.instance().releaseMediaPlayer();
     }
 
-
     /**
      * 暂停播放
      */
@@ -120,6 +119,11 @@ public class GSYVideoManager extends GSYVideoBaseManager {
         if (GSYVideoManager.instance().listener() != null) {
             GSYVideoManager.instance().listener().onVideoResume();
         }
+    }
+
+    @Override
+    public void setMediaVoiceNum(float voiceNum) {
+        GSYVideoManager.instance().setMediaVoiceNum(voiceNum);
     }
 
 
@@ -149,5 +153,6 @@ public class GSYVideoManager extends GSYVideoBaseManager {
         }
         return gsyVideoPlayer != null;
     }
+
 
 }

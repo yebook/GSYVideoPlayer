@@ -193,7 +193,6 @@ public abstract class GSYVideoControlView extends GSYVideoView implements View.O
 
     protected void init(Context context) {
         super.init(context);
-
         mStartButton = findViewById(R.id.start);
         mTitleTextView = (TextView) findViewById(R.id.title);
         mBackButton = (ImageView) findViewById(R.id.back);
@@ -538,6 +537,10 @@ public abstract class GSYVideoControlView extends GSYVideoView implements View.O
     public boolean setUp(String url, boolean cacheWithPlay, String title) {
         return setUp(url, cacheWithPlay, (File) null, title);
     }
+
+
+
+
 
     /**
      * 设置播放URL

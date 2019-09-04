@@ -28,8 +28,12 @@ public interface GSYVideoViewBridge {
      * tag和position都是属于标记flag，不参与播放器实际工作，只是用于防止错误等等
      */
     String getPlayTag();
+
     void setPlayTag(String playTag);
+
+
     int getPlayPosition();
+
     void setPlayPosition(int playPosition);
 
     /**
@@ -42,20 +46,20 @@ public interface GSYVideoViewBridge {
      * @param cache       是否缓存
      * @param cachePath   缓存目录，可以为空，为空时使用默认
      */
-    void prepare(final String url, final Map<String, String> mapHeadData, boolean loop, float speed, boolean cache, File cachePath);
+    void prepare(final String url, final Map<String, String> mapHeadData, boolean loop, float speed, boolean cache, File cachePath, float voiceNum);
 
     /**
      * 开始准备播放
      *
-     * @param url         播放url
-     * @param mapHeadData 头部信息
-     * @param loop        是否循环
-     * @param speed       播放速度
-     * @param cache       是否缓存
-     * @param cachePath   缓存目录，可以为空，为空时使用默认
-     * @param overrideExtension   是否需要覆盖拓展类型
+     * @param url               播放url
+     * @param mapHeadData       头部信息
+     * @param loop              是否循环
+     * @param speed             播放速度
+     * @param cache             是否缓存
+     * @param cachePath         缓存目录，可以为空，为空时使用默认
+     * @param overrideExtension 是否需要覆盖拓展类型
      */
-    void prepare(final String url, final Map<String, String> mapHeadData, boolean loop, float speed, boolean cache, File cachePath, String overrideExtension);
+    void prepare(final String url, final Map<String, String> mapHeadData, boolean loop, float speed, boolean cache, File cachePath, String overrideExtension, float voiceNum);
 
     /**
      * 获取当前播放内核
@@ -117,12 +121,21 @@ public interface GSYVideoViewBridge {
      */
     long getNetSpeed();
 
+
     /**
      * 播放速度修改
      *
      * @param speed 播放速度
      */
     void setSpeed(float speed, boolean soundTouch);
+
+
+    /**
+     * 设备媒体得音量
+     *
+     * @param voiceNum
+     */
+    void setMediaVoiceNum(float voiceNum);
 
     /**
      * 播放速度修改

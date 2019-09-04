@@ -8,6 +8,7 @@ import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Surface;
 
 import com.shuyu.gsyvideoplayer.cache.CacheFactory;
@@ -133,14 +134,15 @@ public abstract class GSYVideoBaseManager implements IMediaPlayer.OnPreparedList
      * @param cacheDir 缓存目录，为空是使用默认目录
      * @param url      指定url缓存，为空时清除所有
      */
-    public void clearDefaultCache(Context context,  File cacheDir,  String url) {
+    public void clearDefaultCache(Context context, File cacheDir, String url) {
         if (cacheManager != null) {
             cacheManager.clearCache(context, cacheDir, url);
         } else {
-            if(getCacheManager() != null) {
+            if (getCacheManager() != null) {
                 getCacheManager().clearCache(context, cacheDir, url);
             }
         }
+
     }
 
     protected void init() {
@@ -194,16 +196,18 @@ public abstract class GSYVideoBaseManager implements IMediaPlayer.OnPreparedList
     }
 
     @Override
-    public void prepare(String url, Map<String, String> mapHeadData, boolean loop, float speed, boolean cache, File cachePath) {
-        prepare(url, mapHeadData, loop, speed, cache, cachePath, null);
+    public void prepare(String url, Map<String, String> mapHeadData, boolean loop, float speed, boolean cache, File cachePath, float voiceNum) {
+        prepare(url, mapHeadData, loop, speed, cache, cachePath, null, voiceNum);
     }
 
     @Override
-    public void prepare(final String url, final Map<String, String> mapHeadData, boolean loop, float speed, boolean cache, File cachePath, String overrideExtension) {
-        if (TextUtils.isEmpty(url)) return;
+    public void prepare(final String url, final Map<String, String> mapHeadData, boolean loop, float speed, boolean cache, File cachePath, String overrideExtension, float voiceNum) {
+        if (TextUtils.isEmpty(url)) {
+            return;
+        }
         Message msg = new Message();
         msg.what = HANDLER_PREPARE;
-        GSYModel fb = new GSYModel(url, mapHeadData, loop, speed, cache, cachePath, overrideExtension);
+        GSYModel fb = new GSYModel(url, mapHeadData, loop, speed, cache, cachePath, overrideExtension, voiceNum);
         msg.obj = fb;
         sendMessage(msg);
         if (needTimeOutOther) {
@@ -293,15 +297,16 @@ public abstract class GSYVideoBaseManager implements IMediaPlayer.OnPreparedList
 
     @Override
     public boolean onError(IMediaPlayer mp, final int what, final int extra) {
-        mainThreadHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                cancelTimeOutBuffer();
-                if (listener() != null) {
-                    listener().onError(what, extra);
-                }
-            }
-        });
+        mainThreadHandler.post(
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        cancelTimeOutBuffer();
+                        if (listener() != null) {
+                            listener().onError(what, extra);
+                        }
+                    }
+                });
         return true;
     }
 
@@ -407,10 +412,10 @@ public abstract class GSYVideoBaseManager implements IMediaPlayer.OnPreparedList
      */
     @Override
     public boolean cachePreview(Context context, File cacheDir, String url) {
-        if(getCacheManager() != null) {
+        if (getCacheManager() != null) {
             return getCacheManager().cachePreview(context, cacheDir, url);
         }
-        return  false;
+        return false;
     }
 
     @Override
@@ -572,7 +577,7 @@ public abstract class GSYVideoBaseManager implements IMediaPlayer.OnPreparedList
                         cacheManager.release();
                     }
                     bufferPoint = 0;
-                    setNeedMute(false);
+                    setNeedMuteGsyBase(false);
                     cancelTimeOutBuffer();
                     break;
                 case HANDLER_RELEASE_SURFACE:
@@ -580,8 +585,14 @@ public abstract class GSYVideoBaseManager implements IMediaPlayer.OnPreparedList
                     break;
             }
         }
-
     }
+
+    //    public void setMediaVoiceIjk(String key, float voiceNum) {
+//        this.voiceNumSet = voiceNum;
+//        if (playerManager != null) {
+//            playerManager.setMediaVoice(key, voiceNum);
+//        }
+//    }
 
     private void initVideo(Message msg) {
         try {
@@ -597,9 +608,12 @@ public abstract class GSYVideoBaseManager implements IMediaPlayer.OnPreparedList
                 cacheManager.setCacheAvailableListener(this);
             }
             playerManager.initVideoPlayer(context, msg, optionModelList, cacheManager);
-
-            setNeedMute(needMute);
+            setNeedMuteGsyBase(needMute);
+            GSYModel gsyModel = (GSYModel) msg.obj;
+            float voiceNumSet = gsyModel.getVoiceNum();
+            Log.e("voice", "======加载得音量===" + voiceNumSet);
             IMediaPlayer mediaPlayer = playerManager.getMediaPlayer();
+            mediaPlayer.setVolume(voiceNumSet, voiceNumSet);
             mediaPlayer.setOnCompletionListener(this);
             mediaPlayer.setOnBufferingUpdateListener(this);
             mediaPlayer.setScreenOnWhilePlaying(true);
@@ -695,12 +709,13 @@ public abstract class GSYVideoBaseManager implements IMediaPlayer.OnPreparedList
     /**
      * 是否需要静音
      */
-    public void setNeedMute(boolean needMute) {
+    public void setNeedMuteGsyBase(boolean needMute) {
         this.needMute = needMute;
         if (playerManager != null) {
             playerManager.setNeedMute(needMute);
         }
     }
+
 
     public int getTimeOut() {
         return timeOut;
