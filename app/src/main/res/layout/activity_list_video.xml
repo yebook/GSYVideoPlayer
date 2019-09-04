@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/activity_list_video"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <com.example.gsyvideoplayer.video.MultiSampleVideo
+        android:id="@+id/video_item_player_1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+
+    <ImageView
+        android:id="@+id/video_item_player_3"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+
+</RelativeLayout>
